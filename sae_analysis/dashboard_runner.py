@@ -12,7 +12,7 @@ import plotly
 import plotly.express as px
 import torch
 from sae_vis.data_fetching_fns import get_feature_data
-from sae_vis.data_storing_fns import FeatureVisParams
+from sae_vis.data_config_classes import SaeVisConfig
 from torch.nn.functional import cosine_similarity
 from tqdm import tqdm
 
@@ -318,24 +318,25 @@ class DashboardRunner:
             for interesting_features in tqdm(feature_idx):
                 print(interesting_features)
 
-                feature_vis_params = FeatureVisParams(
+                feature_vis_params = SaeVisConfig(
                     hook_point=self.sparse_autoencoder.cfg.hook_point,
-                    n_groups=10,
+                    # n_groups=10,
                     minibatch_size_features=256,
                     minibatch_size_tokens=64,
-                    first_group_size=20,
-                    other_groups_size=5,
-                    buffer=(self.buffer_tokens, self.buffer_tokens),
-                    features=interesting_features,
-                    verbose=True,
-                    include_left_tables=False,
+                    #first_group_size=20,
+                    #other_groups_size=5,
+                    #buffer=(self.buffer_tokens, self.buffer_tokens),
+                    #features=interesting_features,
+                    #verbose=True,
+                    #include_left_tables=False,
                 )
 
                 feature_data = get_feature_data(
                     encoder=self.sparse_autoencoder,  # type: ignore
                     model=self.model,
                     tokens=tokens,
-                    fvp=feature_vis_params,
+                    feature_indices=interesting_features,
+                    cfg=feature_vis_params,
                 )
 
                 for i, test_idx in enumerate(feature_data.keys()):
